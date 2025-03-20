@@ -26,22 +26,22 @@ class DefaultCell {
     }
 }
 
-class Cell extends DefaultCell {
-    private gridSize: TCell;
+export default class Cell extends DefaultCell {
+    private fieldSize: TCell;
     private neighbours: TCell[] = []
     private coordinates: TCell;
 
-    constructor(data: TCell, gridSize: TCell) {
+    constructor(data: TCell, fieldSize: TCell) {
         super()
         this.coordinates = data;
-        this.gridSize = gridSize;
+        this.fieldSize = fieldSize;
     }
     
     getCoordinates (): TCell {
         return this.coordinates
     }
     getNeighbours (): TCell[] {
-        if(this.neighbours.length > 0 || typeof this.getValue() === 'number') {
+        if(this.neighbours.length > 0) {
             return this.neighbours
         }
         const {row, column} = this.coordinates
@@ -49,7 +49,7 @@ class Cell extends DefaultCell {
 
         for(let r = row-1; r <= row+1; r++){
             for(let c = column-1; c <= column+1; c++) {
-                if(r >= 0 && r < this.gridSize.row && !(r === row && c === column) && c >= 0 && c <this.gridSize.column){
+                if(r >= 0 && r < this.fieldSize.row && !(r === row && c === column) && c >= 0 && c <this.fieldSize.column){
                     neighbours.push({row: r, column: c})
                 }
             }
@@ -63,13 +63,6 @@ class Cell extends DefaultCell {
     }
     createNumber() {
         const curr = this.getValue()
-
-        if(curr === null) {
-            this.create(0)
-            return
-        }
-        if(curr !== 'bomb') {
-            this.create(curr +1)
-        } 
+        curr === null ? this.create(1) : curr !== 'bomb' ? this.create(curr+1) : null;
     }
 }
