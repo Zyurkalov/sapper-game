@@ -1,6 +1,6 @@
 
 export const createBombs = (row: number, column: number, bombs: number): {r:number, c: number }[] => {
-    if(bombs > Math.floor(row * column / 4)) {
+    if(bombs > Math.floor(row * column *0.25)) {
         throw new Error('превышен 25% порог количества бомб на поле')
     }
     const coordinatesBombs = new Set<string>()
