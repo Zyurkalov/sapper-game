@@ -1,80 +1,83 @@
 <template>
-    <div class="field" @click='handleClick'>
-            <div v-for="(row, rowIndex) in props.field" :key="uuidv4()">
-                <div class="cell" v-for="(cell, columnIndex) in row" 
-                    :key="uuidv4()"
+    <div class="field" >
+        
+            <ul v-for="(row, rowIndex) in props.field" :key="`${rowIndex}`">
+                <li class="cell" 
+                    v-for="(cell, columnIndex) in row" 
+                    :key="`${rowIndex}-${columnIndex}`"
                     :data-row-index="rowIndex"
                     :data-column-index="columnIndex"
+                    :class="getCellStyle(cell).class"
+                    :style="getCellStyle(cell).style"
                     >
-                    <span class="cellNumber":key="uuidv4()">
+                    <span class="cellValue":key="uuidv4()">
                         {{ cell.isChecked ? getCellValue(cell.value) : null}}
                     </span>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, ref, type PropType } from 'vue';
 import {v4 as uuidv4} from 'uuid'
+import type Cell from '@/classes/cell';
+import { getCellStyle } from '@/service/field/getCellStyle';
+import { getCellValue } from '@/service/field/getCellValue';
 
     const props = defineProps({
         field: {
-        type: Array,
+        type: Array as PropType<Cell[][]>,
         required: true,
     },
     })
-    const rows =  ref(0);
-    const columns = ref(0);
+    // const rows =  ref(0);
+    // const columns = ref(0);
+    // const emit = defineEmits(['update-field']);
     
     const handleClick = (e: MouseEvent) => {
+
         const target = e.target as HTMLElement;
-        if (target.className === 'cell') {
-            // console.log(target.dataset.rowIndex)
+        if (target.classList.contains('cell')) {
             const r = parseInt(target.dataset.rowIndex || '0', 10);
             const c = parseInt(target.dataset.columnIndex || '0', 10);
 
-            // console.log(r, c)
-            props.field[r][c].isChecked = true;
+            // const newField = JSON.parse(JSON.stringify(props.field));
+            const newField:Cell[][] = props.field.map((row, rowIndex) => {
+                return rowIndex === r ? row.map((cell, columnIndex) => {
+                    return columnIndex === c ? cell.copy() : cell
+                }): row
+            });
+            const targetCell = newField[r][c]
+            targetCell.isChecked = true;
 
-        }
-        //console.log(e.target);
-    };
-    const getCellValue = (cellValue: number | null | 'bomb') => {
-        return typeof cellValue === 'number' ? cellValue : cellValue === 'bomb' ? 'B' : ''
-    } 
-    const updateDependencies = () => {
-        if (props.field && props.field.length > 0) {
-            rows.value = props.field.length;
-            columns.value = props.field[0].length;
+            // emit('update-field', newField);
         }
     };
 
-    // watch(() => props.field,
-    //     (newField) => {
-    //         if(newField && newField.length > 0){
-    //             rows.value = newField.length;
-    //             columns.value = newField[0].length
-    //         } 
+    // const updateDependencies = () => {
+    //     if (props.field && props.field.length > 0) {
+    //         rows.value = props.field.length;
+    //         columns.value = props.field[0].length;
     //     }
-    // );
-    onMounted(() => {
-        updateDependencies()
-        console.log(props.field[0][0].value)
-
-
-    })
+    // };
+    // onMounted(() => {
+    //     updateDependencies()
+    // })
 
 </script>
 
 <style scoped>
-
-.field {
-
+    ul {
+        padding: 0;
+        list-style: none;
+    }
+    .field {
         padding: 10px;
-        border: 2px solid grey;
+        border: var(--border);
         border-radius: 12px;
-        box-shadow: 0 5px 5px rgb(45, 44, 54);
+        box-shadow: var(--shadow);
+
     }
     .cell {
         box-sizing: border-box;
@@ -88,10 +91,18 @@ import {v4 as uuidv4} from 'uuid'
         border: 1px solid grey;
         border-radius: 5px;
     }
-    .cellNumber {
+    .cell__bomb {
+        color: white;
+    }
+    .cell__closed {
+        background-color: var(--cell-color-0);
+    }
+    .cell__closed:hover {
+        cursor: pointer;
+        box-Shadow: 0 4px 2px var(--cell-color-1);
+    }
+    .cellValue {
         min-height: 12px;
         font-weight: 700;
     }
-    
-    .cellBomb {}
 </style>

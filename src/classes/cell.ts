@@ -2,12 +2,15 @@ type TCell = { row: number, column: number }
 
 class DefaultCell {
     // private init: boolean = false;
-    private flag: null | 'flag' | 'question' = null;
-    private isChecked: boolean = false;
-    private value: number | 'bomb' | null = null;
+    public flag: null | 'flag' | 'question' = null;
+    public isChecked: boolean = false;
+    public value: number | 'bomb' | null = null;
     
     getIsChecked () {
         return this.isChecked
+    };
+    openCell() {
+        this.getIsChecked() ? null : this.isChecked = true
     };
     getValue () {
         return this.value
@@ -65,4 +68,12 @@ export default class Cell extends DefaultCell {
         const curr = this.getValue()
         curr === null ? this.create(1) : curr !== 'bomb' ? this.create(curr+1) : null;
     }
+    copy(): Cell {
+        const newCell = new Cell(this.coordinates, this.fieldSize);
+        newCell.flag = this.flag
+        newCell.isChecked = this.isChecked
+        newCell.value = this.value
+        newCell.neighbours = [...this.neighbours]
+        return newCell;
+      }
 }

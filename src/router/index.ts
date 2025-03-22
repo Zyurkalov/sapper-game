@@ -14,10 +14,12 @@ const router = createRouter({
       path: '/game',
       name: 'game',
       component: Game,
+      props: {rows: 10, columns: 10, maxBombs: 20}
+
     },
     {
-      path: '/score',
-      name: 'score',
+      path: '/honor-board',
+      name: 'honor-board',
       component: () => import ('../views/HonorBoard.vue')
     },
     

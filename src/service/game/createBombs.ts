@@ -1,5 +1,5 @@
 
-export const createBombs = (row: number, column: number, bombs: number): {r:number, c: number }[] => {
+export const createBombs = (row: number, column: number, bombs: number, startCord: {row: number, col: number}): {r:number, c: number }[] => {
     if(bombs > Math.floor(row * column *0.25)) {
         throw new Error('превышен 25% порог количества бомб на поле')
     }
@@ -11,7 +11,7 @@ export const createBombs = (row: number, column: number, bombs: number): {r:numb
         const c = getRandom(column);
         const coord = `${r}/${c}`
 
-        if(!coordinatesBombs.has(coord)){
+        if(!coordinatesBombs.has(coord) && r !==startCord.row && c !==startCord.col){
             coordinatesBombs.add(coord)
         }
     }
