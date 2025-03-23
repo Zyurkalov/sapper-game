@@ -1,7 +1,8 @@
 import type Cell from "@/classes/cell";
 
-export default function openEmptyCells(cells: Cell[][], firstCell: Cell): Cell[][] {
+export default function openEmptyCells(cells: Cell[][], firstCell: Cell): {cells: Cell[][], openedCells: number} {
     const queue: [number, number][] = [];
+    let openedCells = 1
 
     firstCell.getNeighbours().forEach(data => {
         queue.push([data.row, data.column]);
@@ -10,21 +11,23 @@ export default function openEmptyCells(cells: Cell[][], firstCell: Cell): Cell[]
     while (queue.length > 0) {
         const [row, column] = queue.shift()
         const cell = cells[row][column];
+
+        if(cell.getIsChecked()) continue
+
         const value = cell.getValue()
-        const isNumber = typeof value === 'number'
+        cell.openCell();
+        openedCells++
 
-        if (value === null || isNumber && !cell.getIsChecked()) {
-            cell.openCell();
-
-            if(!isNumber){
-                const neighbours = cell.getNeighbours();
-                neighbours.forEach(coords => {
-                    const target = cells[coords.row][coords.column];
-                    if (!target.getIsChecked()) queue.push([coords.row, coords.column]);
-                });
-            }
+        if (value === null) {
+            const neighbours = cell.getNeighbours();
+            neighbours.forEach(coords => {
+                const target = cells[coords.row][coords.column];
+                if (!target.getIsChecked()) {
+                    queue.push([coords.row, coords.column]);
+                }
+            });
         }
     }
-
-    return cells;
+    console.log(openedCells)
+    return {cells, openedCells};
 }

@@ -12,6 +12,8 @@
                     >
                     <span class="cellValue":key="uuidv4()">
                         {{ cell.isChecked ? getCellValue(cell.value) : null}}
+                        <!-- {{ cell.getFlag() && !cell.isChecked ? cell.getFlag() : null}} -->
+                        {{ paintFlag(cell, cell.isChecked) }}
                     </span>
                 </li>
             </ul>
@@ -31,41 +33,12 @@ import { getCellValue } from '@/service/field/getCellValue';
         required: true,
     },
     })
-    // const rows =  ref(0);
-    // const columns = ref(0);
-    // const emit = defineEmits(['update-field']);
-    
-    const handleClick = (e: MouseEvent) => {
-
-        const target = e.target as HTMLElement;
-        if (target.classList.contains('cell')) {
-            const r = parseInt(target.dataset.rowIndex || '0', 10);
-            const c = parseInt(target.dataset.columnIndex || '0', 10);
-
-            // const newField = JSON.parse(JSON.stringify(props.field));
-            const newField:Cell[][] = props.field.map((row, rowIndex) => {
-                return rowIndex === r ? row.map((cell, columnIndex) => {
-                    return columnIndex === c ? cell.copy() : cell
-                }): row
-            });
-            const targetCell = newField[r][c]
-            targetCell.isChecked = true;
-
-            // emit('update-field', newField);
-        }
-    };
-
-    // const updateDependencies = () => {
-    //     if (props.field && props.field.length > 0) {
-    //         rows.value = props.field.length;
-    //         columns.value = props.field[0].length;
-    //     }
-    // };
-    // onMounted(() => {
-    //     updateDependencies()
-    // })
-
-</script>
+    const paintFlag = (target: Cell, isOpened: boolean) => {
+        if(isOpened) return
+        const value = target.getFlag()
+        return value === 'flag' ? 'f' : value !== null ? '?' : ''
+    }
+</script>   
 
 <style scoped>
     ul {

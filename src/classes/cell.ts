@@ -10,7 +10,8 @@ class DefaultCell {
         return this.isChecked
     };
     openCell() {
-        this.getIsChecked() ? null : this.isChecked = true
+        this.isChecked = true
+        return this.isChecked
     };
     getValue () {
         return this.value
@@ -71,7 +72,7 @@ export default class Cell extends DefaultCell {
     copy(): Cell {
         const newCell = new Cell(this.coordinates, this.fieldSize);
         newCell.flag = this.flag
-        newCell.isChecked = this.isChecked
+        newCell.isChecked = this.getIsChecked()
         newCell.value = this.value
         newCell.neighbours = [...this.neighbours]
         return newCell;
