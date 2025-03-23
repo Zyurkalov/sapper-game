@@ -28,6 +28,5 @@ export default function openEmptyCells(cells: Cell[][], firstCell: Cell): {cells
             });
         }
     }
-    console.log(openedCells)
     return {cells, openedCells};
 }

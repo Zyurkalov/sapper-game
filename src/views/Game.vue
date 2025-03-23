@@ -1,8 +1,14 @@
 <template>
     <div class="template" >
-        <!-- <Timer :game-time="65" :is-game-continues="true"></Timer> -->
-        <Field v-if="field && field.length > 0" :field="field" @mousedown="handleClick"/>
-        <span v-else>Закладываем бомбы...</span>
+        <div class="arcade" >
+            <div class="arcade__header" >
+                <MinesCounter :mines="countBombs" ></MinesCounter>
+                <button class="arcade__btn" @click="restartGame">RESTART</button>
+                <Timer :game-time="timer"></Timer>
+            </div>
+            <Field v-if="field && field.length > 0" :field="field" @mousedown="handleClick"/>
+            <span v-else>Закладываем бомбы...</span>
+        </div>
     </div>
 </template>
 
@@ -13,8 +19,13 @@ import Field from '@/components/Field.vue';
 import type Cell from '@/classes/cell';
 import openEmptyCells from '@/service/game/openEmptyCells';
 import createField from '@/service/game/createField';
-import { gameOver } from '@/service/game/gameOver';
-// import Timer from '@/components/Timer.vue';
+import gameOver from '@/service/game/gameOver';
+import Timer from '@/components/Timer.vue';
+import MinesCounter from '@/components/MinesCounter.vue';
+import updateTime from '@/service/game/updateTime';
+import getAllGoodCell from '@/service/game/checkAllGoodCell';
+import getTime from '@/service/game/getTime';
+import getScore from '@/service/game/getScore';
 
 const props = defineProps({
     rows: {
@@ -34,26 +45,36 @@ const props = defineProps({
 const field = ref<Cell[][]>([]);
 const score = ref<number>(0)
 const bombs = ref<coordinates[]>([])
+const countBombs = ref<number>(props.maxBombs)
 const allGoodCells = ref(0);
-const isNewGame = ref(true);
+// const isNewGame = ref(true);
 const isEndGame = ref(false);
+const timer = ref<number>(0)
 const preventContextMenu = (e: MouseEvent) => {
     e.preventDefault(); 
     e.stopPropagation()
 }
+let startTimer:null | number = null;
 
 const handleClick = (e: MouseEvent) => {
     try { 
         const target = (e.target as HTMLElement).closest('.cell');
-        if (target && !isEndGame.value) {
+        if (target && !isEndGame.value ) {
             const r = parseInt(target.dataset.rowIndex || '0', 10);
             const c = parseInt(target.dataset.columnIndex || '0', 10);
-
-            if (isNewGame.value && e.button === 0) {
-                const { initialField, coordBombs } = startGame(10, 10, 20, field.value, { row: r, col: c });
+            
+            if (allGoodCells.value === getAllGoodCell(props) && e.button === 0) {
+                const { initialField, coordBombs } = startGame(props.rows, props.columns, props.maxBombs, field.value, { row: r, col: c });
                 field.value = initialField;
-                isNewGame.value = false;
+                // isNewGame.value = false;
                 bombs.value = coordBombs
+                timer.value = getTime(props.rows, props.columns)
+                
+                if(!startTimer){
+                    startTimer = setInterval(() => {
+                        timer.value = updateTime(timer.value, true);
+                    }, 1000);
+                }
             }
             // const newField = JSON.parse(JSON.stringify(props.field));
             let newField:Cell[][] = field.value.map((row, rowIndex) => {
@@ -65,57 +86,79 @@ const handleClick = (e: MouseEvent) => {
             const valueCell = targetCell.getValue()
 
             if(e.button === 0 && !targetCell.getIsChecked()) {
-                targetCell.openCell();
                 
-                score.value = typeof valueCell === 'number' ? score.value + valueCell : score.value
+                targetCell.openCell();
+                if (typeof valueCell === 'number') {
+                    score.value += valueCell;
+                    --allGoodCells.value
+                }
                 if(!valueCell) {
-                    console.log('test')
                     const {cells, openedCells} = openEmptyCells(newField, targetCell)
                     allGoodCells.value = allGoodCells.value - openedCells
                     newField = cells
                 }
-                else if(valueCell === 'bomb') {
+                if (valueCell === 'bomb' || timer.value <= 0) {
                     isEndGame.value = true
                     console.log('GAME OVER')
                     newField = gameOver(valueCell, bombs.value, newField)
-                } else {
-                    --allGoodCells.value
+                    if(startTimer){
+                        clearInterval(startTimer)
+                        startTimer = null
+                    }
                 }
-
                 field.value = newField;
                 
                 if(allGoodCells.value === 0) {
+                    isEndGame.value = true
+                    if(startTimer){
+                        clearInterval(startTimer)
+                        startTimer = null
+                    }
+                    console.log(getScore(score.value, getTime(props.rows, props.columns), timer.value))
                     console.log('WINNER!')
                 }
             } else {
                 targetCell.changeFlag() 
                 field.value = newField;
+
+                if(!targetCell.getIsChecked()) {
+                    const flag = targetCell.getFlag()
+                    countBombs.value = flag === 'flag' 
+                        ? countBombs.value -1 
+                        : flag === null
+                            ? countBombs.value +1
+                            : countBombs.value
+                }
             }  
+            // console.log(allGoodCells.value)
         }
     } catch(err) {
-        new Error('Ошибка в обработке клика')
+        throw new Error('Ошибка в обработке клика')
     }
 }
-onMounted(async() => {
-    try {
-        window.addEventListener('contextmenu', preventContextMenu); 
-        field.value = createField(10, 10)
-        allGoodCells.value = props.rows * props.columns - props.maxBombs
-        console.log(allGoodCells.value)
-    }
-    catch(err) {
-        new Error('Ошибка при создании поля')
-        field.value = []
-    }
-});
-onUnmounted(() => {
-    window.removeEventListener('contextmenu', preventContextMenu);
+const restartGame = () => {
     field.value = [];
     score.value = 0;
     bombs.value = [];
-    allGoodCells.value = 0;
-    isNewGame.value = true;
+    countBombs.value = props.maxBombs
+    allGoodCells.value = getAllGoodCell(props)
+    // isNewGame.value = true;
     isEndGame.value = false;
+    timer.value = getTime(props.rows, props.columns)
+    field.value = createField(props.rows, props.columns)
+}
+onMounted(() => {
+    window.addEventListener('contextmenu', preventContextMenu); 
+    field.value = createField(props.rows, props.columns)
+    allGoodCells.value = getAllGoodCell(props)
+
+});
+onUnmounted(() => {
+    window.removeEventListener('contextmenu', preventContextMenu);
+    if(startTimer) {
+        clearInterval(startTimer)
+        startTimer = null;
+    }; 
 })
 </script>
 
@@ -131,5 +174,24 @@ onUnmounted(() => {
     }
     .gameInt {
         padding-bottom: 10px;
+    }
+    .arcade{
+        padding: 10px;
+        border: var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow-outside);
+    }
+    .arcade__header {
+        display: flex;
+        padding-bottom: 10px;
+        justify-content: space-between;
+    }
+    .arcade__btn {
+        font-family: var(--font-paragraph);
+        border: 0;
+        background-color: transparent;
+    }
+    .arcade__btn:hover {
+        cursor: pointer;
     }
 </style>

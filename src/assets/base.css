@@ -4,6 +4,9 @@
   --vt-c-white-mute: #f2f2f2;
 
   --color-grey: rgb(154, 155, 160);
+  --color-darkgrey: rgba(61, 50, 50, 0.541);
+  --color-interface-black: rgb(53, 52, 52);
+
   --cell-color-0: #cac7c63a;
   --cell-color-1: #b7c2d8;
   --cell-color-2: #5ea3b8;
@@ -14,7 +17,10 @@
   --cell-color-7: #f31212;
   --cell-color-8: #000000;
 
-  --shadow: 0 4px 2px var(--color-grey);
+  --font-paragraph: Tektur, Arial, Helvetica, sans-serif;
+
+  --shadow-outside: 0 4px 2px var(--color-grey);
+  --shadow-inside: inset 0 2px 1px var(--color-darkgrey);
   --border: 2px solid var(--color-grey);
 
 }

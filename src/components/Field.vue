@@ -36,7 +36,7 @@ import { getCellValue } from '@/service/field/getCellValue';
     const paintFlag = (target: Cell, isOpened: boolean) => {
         if(isOpened) return
         const value = target.getFlag()
-        return value === 'flag' ? 'f' : value !== null ? '?' : ''
+        return value === 'flag' ? '🚩' : value !== null ? '❓' : ''
     }
 </script>   
 
@@ -45,13 +45,12 @@ import { getCellValue } from '@/service/field/getCellValue';
         padding: 0;
         list-style: none;
     }
-    .field {
+    /* .field {
         padding: 10px;
         border: var(--border);
         border-radius: 12px;
-        box-shadow: var(--shadow);
-
-    }
+        box-shadow: var(--shadow-outside);
+    } */
     .cell {
         box-sizing: border-box;
         min-width: 30px;
@@ -75,7 +74,8 @@ import { getCellValue } from '@/service/field/getCellValue';
         box-Shadow: 0 4px 2px var(--cell-color-1);
     }
     .cellValue {
-        min-height: 12px;
+        min-height: 11px;
         font-weight: 700;
+        font-family: var(--font-paragraph);
     }
 </style>
