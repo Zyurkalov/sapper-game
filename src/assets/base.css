@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Righteous';
+  src: url('/fonts/Righteous.woff2')format('woff2');
+  /* font-weight: 400; */
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Tektur';
+  src: url('/fonts/Tektur.woff2')format('woff2');
+  /* font-weight: 400; */
+  font-style: normal;
+}
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -17,26 +29,17 @@
   --cell-color-7: #f31212;
   --cell-color-8: #000000;
 
+  --br-6: 6px;
+
   --font-paragraph: Tektur, Arial, Helvetica, sans-serif;
+  --font-header: Righteous, Arial, Helvetica, sans-serif;
+
 
   --shadow-outside: 0 4px 2px var(--color-grey);
   --shadow-inside: inset 0 2px 1px var(--color-darkgrey);
   --border: 2px solid var(--color-grey);
-
 }
 
-@font-face {
-  font-family: 'Righteous';
-  src: url('/fonts/Righteous-Regular.woff2')format('woff2');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Tektur';
-  src: url('/fonts/Tektur-VariableFont_wdth\,wght.woff2')format('woff2');
-  /* font-weight: 400; */
-  font-style: normal;
-}
 *,
 *::before,
 *::after {

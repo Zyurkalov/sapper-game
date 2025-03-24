@@ -165,7 +165,7 @@ onUnmounted(() => {
 <style scoped>
     .template {
         width: 100vw;
-        height: 90vh;
+        height: 85vh;
 
         display: flex;
         flex-direction: column;

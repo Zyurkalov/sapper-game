@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
+import Home from '@/views/Home.vue';
 import Game from '@/views/Game.vue'
 
 const router = createRouter({
@@ -12,17 +12,31 @@ const router = createRouter({
     },
     {
       path: '/game',
+      redirect: '/', 
+    },
+    {
+      path: '/game/:rows/:columns/:maxBombs',
       name: 'game',
       component: Game,
-      props: {rows: 10, columns: 10, maxBombs: 20}
-
+      props: (route) => {
+        const rows = Number(route.params.rows) || 4;
+        const columns = Number(route.params.columns) || 4;
+        const maxBombs = Number(route.params.maxBombs) || 5;
+        return {
+          rows, columns, maxBombs
+        }
+      }
     },
     {
       path: '/honor-board',
       name: 'honor-board',
       component: () => import ('../views/HonorBoard.vue')
     },
-    
+    {
+      path: '/*',
+      name: '404',
+      component: () => import ('../views/Home.vue')
+    },
   ],
 })
 
