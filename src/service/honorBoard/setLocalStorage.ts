@@ -1,6 +1,6 @@
 import type { STORAGE_KEYS } from "../types";
 
-export const recordLocalStorage = (data: unknown, rang?: STORAGE_KEYS): void => {
+export const setLocalStorage = (data: unknown, rang?: STORAGE_KEYS): void => {
     try {
         if (isWinner(data)) {
             localStorage.setItem('gameSapper-winner', JSON.stringify(data));

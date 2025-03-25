@@ -2,7 +2,7 @@
     <div class="container" :style="getTimerStyle(currenTime).style">
         <span class="timer">
             {{ String(Math.floor(currenTime / 60)).padStart(2, '0') }}
-            : {{ String(currenTime % 60).padStart(2, '0') }}
+            : {{ String(Math.floor(currenTime % 60)).padStart(2, '0') }}
         </span>
     </div>
 </template>

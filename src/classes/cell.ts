@@ -10,6 +10,7 @@ class DefaultCell {
         return this.isChecked
     };
     openCell() {
+        this.flag = null
         this.isChecked = true
         return this.isChecked
     };

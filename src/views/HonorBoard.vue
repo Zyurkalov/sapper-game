@@ -10,7 +10,7 @@
         <ul class="honor__listWinners">
             <li v-for="player in winners" :key="player.id" class="honor__list">
                 <div class="honor__player">
-                    <span class="honor__span honor__span_place">{{ player.id }}</span>
+                    <span class="honor__span honor__span_place">{{ player.place }}</span>
                     <p class="honor__namePlayer">{{ player.name }}</p>
                     <span class="honor__span honor__span_score">{{ player.score }}</span>
                 </div>
@@ -25,7 +25,7 @@ import { DEFAULT_WINNERS } from '@/service/constants';
 import { getDefaultLeaders } from '@/service/honorBoard/getDefaultLeaders';
 import { getLocalStorage } from '@/service/honorBoard/getLocalStorage';
 import { getStorageKey } from '@/service/honorBoard/getStorageKey';
-import { recordLocalStorage } from '@/service/honorBoard/recordLocalStorage';
+import { setLocalStorage } from '@/service/honorBoard/setLocalStorage';
 
 import { STORAGE_KEYS, type TRank, type TWinner } from '@/service/types';
 import { onMounted, ref } from 'vue';
@@ -43,14 +43,14 @@ const changeRank = (e: MouseEvent): void => {
         } else {
             const newWinners: TWinner[] = getDefaultLeaders()
             winners.value = newWinners
-            recordLocalStorage(newWinners, getStorageKey(rank))
+            setLocalStorage(newWinners, getStorageKey(rank))
         }
     } 
 }
     onMounted(() => {
         const storedData = getLocalStorage(STORAGE_KEYS.winnersEasy);
         if (!storedData) {
-            recordLocalStorage(DEFAULT_WINNERS, STORAGE_KEYS.winnersEasy)
+            setLocalStorage(DEFAULT_WINNERS, STORAGE_KEYS.winnersEasy)
             winners.value = DEFAULT_WINNERS
         }
         else {

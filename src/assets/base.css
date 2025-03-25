@@ -11,12 +11,12 @@
   font-style: normal;
 }
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  --white: #ffffff;
+  --white-soft: #f8f8f8;
+  --white-mute: #f2f2f2;
 
   --color-grey: rgb(154, 155, 160);
-  --color-darkgrey: rgba(61, 50, 50, 0.541);
+  --color-darkgrey: rgba(41, 33, 33, 0.829);
   --color-interface-black: rgb(53, 52, 52);
 
   --cell-color-0: #cac7c63a;
@@ -30,6 +30,9 @@
   --cell-color-8: #000000;
 
   --br-6: 6px;
+  --br-12: 12px;
+
+  --pd-10: 10px;
 
   --font-paragraph: Tektur, Arial, Helvetica, sans-serif;
   --font-header: Righteous, Arial, Helvetica, sans-serif;

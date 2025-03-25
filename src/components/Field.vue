@@ -1,6 +1,5 @@
 <template>
     <div class="field" >
-        
             <ul v-for="(row, rowIndex) in props.field" :key="`${rowIndex}`">
                 <li class="cell" 
                     v-for="(cell, columnIndex) in row" 
@@ -41,20 +40,26 @@ import { getCellValue } from '@/service/field/getCellValue';
 </script>   
 
 <style scoped>
+    .field {
+        max-width: 80vw;
+        max-height: 75vh;
+        overflow: auto;
+        width: fit-content; 
+    }
     ul {
         padding: 0;
+        margin: 0; 
         list-style: none;
+        display: flex; 
+        flex-wrap: nowrap; 
     }
-    /* .field {
-        padding: 10px;
-        border: var(--border);
-        border-radius: 12px;
-        box-shadow: var(--shadow-outside);
-    } */
     .cell {
         box-sizing: border-box;
-        min-width: 30px;
-        min-height: 30px;
+        width: 30px; 
+        height: 30px; 
+        min-width: 20px; 
+        min-height: 20px; 
+        flex: 1 0 auto;
 
         display: inline-flex;
         justify-content: center;

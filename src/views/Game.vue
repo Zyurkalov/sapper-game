@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { startGame, type coordinates } from '@/service/game/startGame';
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import Field from '@/components/Field.vue';
 import type Cell from '@/classes/cell';
 import openEmptyCells from '@/service/game/openEmptyCells';
@@ -26,6 +26,8 @@ import updateTime from '@/service/game/updateTime';
 import getAllGoodCell from '@/service/game/checkAllGoodCell';
 import getTime from '@/service/game/getTime';
 import getScore from '@/service/game/getScore';
+import { usePopupStore } from '@/stores/usePopup';
+import { useUserData } from '@/stores/useUserData';
 
 const props = defineProps({
     rows: {
@@ -42,6 +44,9 @@ const props = defineProps({
     },
 });
 // let bombms: {r: number, c: number}[] = []
+const popupStore = usePopupStore()
+const userStore = useUserData()
+
 const field = ref<Cell[][]>([]);
 const score = ref<number>(0)
 const bombs = ref<coordinates[]>([])
@@ -55,7 +60,6 @@ const preventContextMenu = (e: MouseEvent) => {
     e.stopPropagation()
 }
 let startTimer:null | number = null;
-
 const handleClick = (e: MouseEvent) => {
     try { 
         const target = (e.target as HTMLElement).closest('.cell');
@@ -67,6 +71,7 @@ const handleClick = (e: MouseEvent) => {
                 const { initialField, coordBombs } = startGame(props.rows, props.columns, props.maxBombs, field.value, { row: r, col: c });
                 field.value = initialField;
                 // isNewGame.value = false;
+                countBombs.value = coordBombs.length
                 bombs.value = coordBombs
                 timer.value = getTime(props.rows, props.columns)
                 
@@ -114,7 +119,13 @@ const handleClick = (e: MouseEvent) => {
                         clearInterval(startTimer)
                         startTimer = null
                     }
-                    console.log(getScore(score.value, getTime(props.rows, props.columns), timer.value))
+                    // console.log(getScore(score.value, getTime(props.rows, props.columns), timer.value))
+                    // console.log(getTime(props.rows, props.columns), timer.value)
+                    popupStore.openWinnerPopup()
+                    userStore.setUserData({
+                        score: score.value,
+                        time: getTime(props.rows, props.columns) - timer.value
+                    })
                     console.log('WINNER!')
                 }
             } else {
@@ -173,17 +184,17 @@ onUnmounted(() => {
         justify-content: center;
     }
     .gameInt {
-        padding-bottom: 10px;
+        padding-bottom: var(--pd-10);
     }
     .arcade{
-        padding: 10px;
+        padding: var(--pd-10);
         border: var(--border);
-        border-radius: 12px;
+        border-radius: var(--br-12);
         box-shadow: var(--shadow-outside);
     }
     .arcade__header {
         display: flex;
-        padding-bottom: 10px;
+        padding-bottom: var(--pd-10);
         justify-content: space-between;
     }
     .arcade__btn {

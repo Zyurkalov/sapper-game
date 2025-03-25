@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import PopUp from './components/PopUp.vue';
+import { usePopupStore } from './stores/usePopup';
+const popupStore = usePopupStore()
 </script>
 
 <template>
@@ -11,6 +14,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <RouterLink to="/honor-board">Score</RouterLink>
 
       </nav>
+      <PopUp v-if="popupStore.status"></PopUp>
   </header>
 
   <RouterView />
