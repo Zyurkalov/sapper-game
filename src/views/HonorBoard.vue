@@ -7,15 +7,18 @@
             <button class="honor__btn">hard</button>
             <button class="honor__btn">custom</button>
         </menu>
-        <ul class="honor__listWinners">
-            <li v-for="player in winners" :key="player.id" class="honor__list">
-                <div class="honor__player">
-                    <span class="honor__span honor__span_place">{{ player.place }}</span>
-                    <p class="honor__namePlayer">{{ player.name }}</p>
-                    <span class="honor__span honor__span_score">{{ player.score }}</span>
-                </div>
-            </li>
-        </ul>
+        <Transition name="fade-slide" mode="out-in">
+            <ul v-if="winners.length" class="honor__listWinners" :key="currentRank">
+                <li v-for="player in winners" :key="player.id" class="honor__list">
+                    <div class="honor__player">
+                        <span class="honor__span honor__span_place">{{ player.place }}</span>
+                        <p class="honor__namePlayer">{{ player.name }}</p>
+                        <span class="honor__span honor__span_score">{{ player.score }}</span>
+                    </div>
+                </li>
+            </ul>
+        </Transition>
+
     </div>
 </template>
 
@@ -30,20 +33,21 @@ import { setLocalStorage } from '@/service/honorBoard/setLocalStorage';
 import { STORAGE_KEYS, type TRank, type TWinner } from '@/service/types';
 import { onMounted, ref } from 'vue';
 
+const currentRank = ref('easy');
 const winners = ref<TWinner[]>([])
 
 const changeRank = (e: MouseEvent): void => {
     e.stopPropagation()
     const target = e.target as HTMLElement | null;
     if (target?.textContent) {
-        const rank = target.textContent.trim().toLowerCase();
-        const storageDate: TWinner[] | null = getLocalStorage(getStorageKey(rank))
+        currentRank.value = target.textContent.trim().toLowerCase();
+        const storageDate: TWinner[] | null = getLocalStorage(getStorageKey(currentRank.value))
         if(storageDate) {
             winners.value = storageDate
         } else {
             const newWinners: TWinner[] = getDefaultLeaders()
             winners.value = newWinners
-            setLocalStorage(newWinners, getStorageKey(rank))
+            setLocalStorage(newWinners, getStorageKey(currentRank.value))
         }
     } 
 }
@@ -99,11 +103,8 @@ const changeRank = (e: MouseEvent): void => {
     }
     .honor__list {
         overflow: hidden;
-
-        /* border: solid 1px grey; */
         border-radius: var(--br-6);
         border-bottom: solid 1px lightgray;
-        /* box-Shadow: 0 4px 2px var(--cell-color-1); */
         box-shadow: var(--shadow-inside);
     }
     .honor__player {
@@ -149,4 +150,19 @@ const changeRank = (e: MouseEvent): void => {
         font-size: 1rem;
         font-weight: 600;
     }
+    .fade-slide-enter-active,
+    .fade-slide-leave-active {
+        transition: all 0.5s ease-out
+    }
+
+    .fade-slide-enter-from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .fade-slide-leave-to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    
 </style>
