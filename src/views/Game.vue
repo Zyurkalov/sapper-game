@@ -93,7 +93,7 @@ const handleClick = (e: MouseEvent) => {
                 }
             }
             // const newField = JSON.parse(JSON.stringify(props.field));
-            let newField: Cell[][] = field.value.map((row, rowIndex) => {
+            let newField: Cell[][] | any = field.value.map((row, rowIndex) => {
                 return rowIndex === r
                     ? row.map((cell, columnIndex) => {
                           return columnIndex === c ? cell.copy() : cell;

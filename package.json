@@ -1,15 +1,22 @@
 {
   "name": "sapper-game",
-  "version": "0.0.0",
+  "homepage": "./",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "author": {
+    "name": "Zyurkalov",
+    "url": "https://github.com/Zyurkalov"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "pinia": "^3.0.1",
@@ -24,6 +31,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
+    "gh-pages": "^6.3.0",
     "jsdom": "^26.0.0",
     "npm-run-all2": "^7.0.2",
     "typescript": "~5.8.0",
