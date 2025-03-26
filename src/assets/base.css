@@ -1,52 +1,51 @@
 @font-face {
-  font-family: 'Righteous';
-  src: url('/fonts/Righteous.woff2')format('woff2');
-  /* font-weight: 400; */
-  font-style: normal;
+    font-family: "Righteous";
+    src: url("/fonts/Righteous.woff2") format("woff2");
+    /* font-weight: 400; */
+    font-style: normal;
 }
 @font-face {
-  font-family: 'Tektur';
-  src: url('/fonts/Tektur.woff2')format('woff2');
-  /* font-weight: 400; */
-  font-style: normal;
+    font-family: "Tektur";
+    src: url("/fonts/Tektur.woff2") format("woff2");
+    /* font-weight: 400; */
+    font-style: normal;
 }
 :root {
-  --white: #ffffff;
-  --white-soft: #f8f8f8;
-  --white-mute: #f2f2f2;
+    --white: #ffffff;
+    --white-soft: #f8f8f8;
+    --white-mute: #f2f2f2;
 
-  --color-grey: rgb(154, 155, 160);
-  --color-darkgrey: rgba(41, 33, 33, 0.829);
-  --color-interface-black: rgb(53, 52, 52);
+    --color-grey: rgb(154, 155, 160);
+    --color-darkgrey: rgba(26, 24, 34, 0.829);
+    --color-interface-black: rgb(53, 52, 52);
 
-  --cell-color-0: #cac7c63a;
-  --cell-color-1: #b7c2d8;
-  --cell-color-2: #5ea3b8;
-  --cell-color-3: #02ad88;
-  --cell-color-4: #35af05;
-  --cell-color-5: #af9e05;
-  --cell-color-6: #c45811;
-  --cell-color-7: #f31212;
-  --cell-color-8: #000000;
+    --cell-color-0: #cac7c63a;
+    --cell-color-1: #b7c2d8;
+    --cell-color-2: #5ea3b8;
+    --cell-color-3: #02ad88;
+    --cell-color-4: #35af05;
+    --cell-color-5: #af9e05;
+    --cell-color-6: #c45811;
+    --cell-color-7: #f31212;
+    --cell-color-8: #000000;
 
-  --br-6: 6px;
-  --br-12: 12px;
+    --br-6: 6px;
+    --br-12: 12px;
 
-  --pd-10: 10px;
+    --pd-10: 10px;
 
-  --font-paragraph: Tektur, Arial, Helvetica, sans-serif;
-  --font-header: Righteous, Arial, Helvetica, sans-serif;
+    --font-paragraph: Tektur, Arial, Helvetica, sans-serif;
+    --font-header: Righteous, Arial, Helvetica, sans-serif;
 
-
-  --shadow-outside: 0 4px 2px var(--color-grey);
-  --shadow-inside: inset 0 2px 1px var(--color-darkgrey);
-  --border: 2px solid var(--color-grey);
+    --shadow-outside: 0 4px 2px var(--color-grey);
+    --shadow-inside: inset 0 2px 1px var(--color-darkgrey);
+    --border: 2px solid var(--color-grey);
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
+    box-sizing: border-box;
+    margin: 0;
+    font-weight: normal;
 }
