@@ -1,39 +1,45 @@
-# sapper-game
+# Sapper-game
+> Тестовое задание. Реализация игры "Сапер" на `.vue` </br>
+> Срок выполнения - одна неделя. Проверено на браузерах Firefox и Chrome
 
-This template should help get you started developing with Vue 3 in Vite.
+## Что сделано:
+- реализована базовая логика игры
+- добавлены три уровня сложности
+- добавлены необходимые страницы и подключены роуты
+- рейтинг игроков, сохраняемый в localStorage
 
-## Recommended IDE Setup
+### Что добавлено (дополнительно):
+- Кастомный режим, с пользовательским размером поля и количеством мин
+- Реализация такой генерации мин, чтобы при первом ходе невозможно было проиграть
+- Автоматическая победа, если открыты все не заминированные клетки
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### НЕ сделано (дополнительно):
+- не реализована логика нажатия на среднюю кнопку мыши
 
-## Type Support for `.vue` Imports in TS
+### Изменено:
+- цветовая дифференциация ~~штанов~~ клеток
+> классическая всегда казалось не логичной </br>
+> во время разработки комп падал с синим экраном :)</br>
+> в проекте не использовался сторонний UI Kit, о чем я конечно же пожалел</br>
+> для оптимизации в проекте использовались классы и алгоритм поиска в ширину
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
+## Установка / запуск:
+- Для ознакомления достаточно перейти по ссылке: https://zyurkalov.github.io/sapper-game/
+- Для развертывания проекта:
+#### Склонируйте проект и установите зависимости
 ```sh
 npm install
 ```
-
-### Compile and Hot-Reload for Development
-
+#### Запустите
 ```sh
 npm run dev
 ```
+#### Enjoy!
 
-### Type-Check, Compile and Minify for Production
+## Замеченные баги:
+- если на игровом поле расставить флажки, а затем открыть "пустую" клетку из-за чего по цепочке начинают открываться соседние (включая те что с флагом), то счетчик мин не будет сброшен обратно
 
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
+## Используемые инструменты:
+- Vue.js
+- Pinia 
+- TypeScript
