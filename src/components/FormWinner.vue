@@ -6,7 +6,7 @@
         </div>
         <div class="formWinner__result">
             <p>Time:</p>
-            <span>{{ getTime() }}</span>
+            <span>{{ getTime }}</span>
         </div>
     </div>
     <input
@@ -50,12 +50,12 @@ const handleInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
     emit("update:modelValue", target.value);
 };
-const getTime = () => {
+const getTime = computed(() => {
     const time = userStore.getUserData().time;
     const min = String(Math.floor(time / 60)).padStart(2, "0");
     const sec = String(Math.floor(time % 60)).padStart(2, "0");
     return `${min}:${sec}`;
-};
+});
 const userScore = computed(() => userStore.getUserData().score);
 </script>
 

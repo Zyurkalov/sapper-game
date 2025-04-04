@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+import { MAX_ROWANDCOLUMNS, MIN_ROWANDCOLUMNS } from "@/service/constants";
+
 const props = defineProps({
     modelValue: {
         type: Number,
@@ -29,11 +31,11 @@ const props = defineProps({
     },
     min: {
         type: Number,
-        default: 8,
+        default: MIN_ROWANDCOLUMNS,
     },
     max: {
         type: Number,
-        default: 75,
+        default: MAX_ROWANDCOLUMNS,
     },
 });
 const emit = defineEmits();

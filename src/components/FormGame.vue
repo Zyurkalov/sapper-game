@@ -39,21 +39,25 @@ import Input from "./Input.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import { useRouter } from "vue-router";
 import { usePopupStore } from "@/stores/usePopup";
+import {
+    MAX_BOMBS,
+    MAX_ROWANDCOLUMNS,
+    MIN_ROWANDCOLUMNS,
+} from "@/service/constants";
 
 const rows = ref(16);
 const columns = ref(32);
 const bombs = ref(100);
-const MIN_NUMBER = 8;
-const MAX_NUMBER = 75;
-const MAX_BOMBS = 1125;
 const popupStore = usePopupStore();
 const router = useRouter();
 const maxBombs = computed(() => Math.floor((rows.value * columns.value) / 5));
 
 const isInputValid = () => {
-    const isRowsValid = rows.value >= MIN_NUMBER && rows.value <= MAX_NUMBER;
+    const isRowsValid =
+        rows.value >= MIN_ROWANDCOLUMNS && rows.value <= MAX_ROWANDCOLUMNS;
     const isColumnsValid =
-        columns.value >= MIN_NUMBER && columns.value <= MAX_NUMBER;
+        columns.value >= MIN_ROWANDCOLUMNS &&
+        columns.value <= MAX_ROWANDCOLUMNS;
     const isBombsValid = bombs.value > 0 && bombs.value <= maxBombs.value;
 
     return isRowsValid && isColumnsValid && isBombsValid;

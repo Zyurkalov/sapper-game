@@ -1,5 +1,5 @@
 const TIME_MODIFICATOR = 1.5;
-const SCORE_MODIFICATOR = 1.5;
+const SCORE_MODIFICATOR = 0.5;
 
 const DEFAULT_WINNERS = [
     { id: 1, place: 1, name: "Elon Musk", score: 10 },
@@ -14,4 +14,15 @@ const DEFAULT_WINNERS = [
     { id: 10, place: 10, name: "max_666", score: 1 },
 ];
 
-export { TIME_MODIFICATOR, SCORE_MODIFICATOR, DEFAULT_WINNERS };
+const MIN_ROWANDCOLUMNS = 8;
+const MAX_ROWANDCOLUMNS = 100;
+const MAX_BOMBS = 2000;
+
+export {
+    TIME_MODIFICATOR,
+    SCORE_MODIFICATOR,
+    DEFAULT_WINNERS,
+    MIN_ROWANDCOLUMNS,
+    MAX_ROWANDCOLUMNS,
+    MAX_BOMBS,
+};
