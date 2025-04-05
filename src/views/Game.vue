@@ -1,10 +1,9 @@
 <template>
     <div class="template">
         <div class="arcade">
-            <div class="arcade__wire arcade__wire_left"></div>
-            <div class="arcade__wire arcade__wire_right"></div>
-            <div class="arcade__switch arcade__switch_right"></div>
-            <div class="arcade__switch arcade__switch_left"></div>
+            <div class="arcade__wire"></div>
+            <div class="arcade__switch"></div>
+            <div class="arcade__wire_btn"></div>
 
             <div class="arcade__header">
                 <MinesCounter :mines="countBombs"></MinesCounter>
@@ -181,8 +180,8 @@ onUnmounted(() => {
 
 <style scoped>
 .template {
-    width: 100vw;
-    height: 85vh;
+    max-width: 100vw;
+    height: 90vh;
 
     display: flex;
     flex-direction: column;
@@ -214,49 +213,62 @@ onUnmounted(() => {
 .arcade__btn:hover {
     cursor: pointer;
 }
-.arcade__wire {
-    position: absolute;
+.arcade__wire,
+.arcade__switch {
+    position: relative;
+    top: -22px;
+    right: 0;
 }
-.arcade__wire_left {
-    top: -53px;
-    left: -41px;
+.arcade__wire::before {
+    content: "";
+    position: absolute;
+    top: -41px;
+    left: -50px;
     z-index: -1;
 
     height: 170px;
     width: 125px;
     background-image: url(../assets/images/Group1.svg);
     background-repeat: no-repeat;
+    pointer-events: none;
 }
-.arcade__wire_right {
-    bottom: 20px;
-    right: -51px;
+.arcade__switch::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -10px;
+    right: 12px;
+    height: 21px;
+    width: 60px;
+    background-image: url(../assets/images/Group3.svg);
+    background-repeat: no-repeat;
+}
+.arcade__switch::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    right: 90px;
+
+    height: 10px;
+    width: 30px;
+    background-color: var(--color-grey);
+}
+.arcade__wire_btn {
+    bottom: 0px;
+    left: 0px;
+}
+.arcade__wire_btn::after {
+    content: "";
+    position: absolute;
+    bottom: -118px;
+    left: 90px;
+    rotate: 90deg;
     z-index: -1;
 
     height: 182px;
     width: 51px;
     background-image: url(../assets/images/Group2.svg);
     background-repeat: no-repeat;
-}
-.arcade__switch {
-    position: absolute;
-}
-.arcade__switch_right {
-    z-index: -1;
-    top: -23px;
-    right: 20px;
-
-    height: 21px;
-    width: 60px;
-    background-image: url(../assets/images/Group3.svg);
-    background-repeat: no-repeat;
-}
-.arcade__switch_left {
-    z-index: -1;
-    top: -10px;
-    right: 90px;
-
-    height: 10px;
-    width: 30px;
-    background-color: var(--color-grey);
 }
 </style>
