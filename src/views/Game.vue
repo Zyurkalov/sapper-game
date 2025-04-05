@@ -123,9 +123,14 @@ const handleClick = (e: MouseEvent) => {
                 }
 
                 if (allGoodCells.value === 0) {
-                    const elapsedTime =
-                        getTime(props.rows, props.columns) - timer.value;
-                    gameWin(props.rows, props.columns, elapsedTime, isEndGame);
+                    gameWin(
+                        score.value,
+                        props.rows,
+                        props.columns,
+                        timer.value,
+                        bombs.value.length,
+                        isEndGame
+                    );
                     startTimer = clearSetInterval(startTimer);
                 }
             } else {
@@ -164,6 +169,7 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("contextmenu", preventContextMenu);
     window.removeEventListener("click", handleClick);
+    window.removeEventListener("click", restartGame);
     startTimer = clearSetInterval(startTimer);
 });
 </script>

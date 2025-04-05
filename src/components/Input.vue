@@ -16,6 +16,8 @@
 <script setup lang="ts">
 import { MAX_ROWANDCOLUMNS, MIN_ROWANDCOLUMNS } from "@/service/constants";
 
+// import { MAX_ROWANDCOLUMNS, MIN_ROWANDCOLUMNS } from "@/service/constants";
+
 const props = defineProps({
     modelValue: {
         type: Number,
@@ -31,19 +33,24 @@ const props = defineProps({
     },
     min: {
         type: Number,
-        default: MIN_ROWANDCOLUMNS,
+        // default: MIN_ROWANDCOLUMNS,
     },
     max: {
         type: Number,
-        default: MAX_ROWANDCOLUMNS,
+        // default: MAX_ROWANDCOLUMNS,
     },
 });
 const emit = defineEmits();
 
 const handleInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    const value = target.valueAsNumber || Number(target.value) || props.min;
-    emit("update:modelValue", Math.max(props.min, Math.min(props.max, value)));
+    const value =
+        target.valueAsNumber || Number(target.value) || MIN_ROWANDCOLUMNS;
+    emit(
+        "update:modelValue",
+        Math.max(MIN_ROWANDCOLUMNS, Math.min(MAX_ROWANDCOLUMNS, value))
+    );
+    // emit("update:modelValue", value);
 };
 </script>
 

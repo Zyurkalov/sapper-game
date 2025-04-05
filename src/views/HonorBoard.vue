@@ -42,7 +42,7 @@ import { getStorageKey } from "@/service/honorBoard/getStorageKey";
 import { setLocalStorage } from "@/service/honorBoard/setLocalStorage";
 
 import { STORAGE_KEYS, type TWinner } from "@/service/types";
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const currentRank = ref("easy");
 const winners = ref<TWinner[]>([]);
@@ -72,6 +72,9 @@ onMounted(() => {
     } else {
         winners.value = storedData;
     }
+});
+onUnmounted(() => {
+    window.removeEventListener("click", changeRank);
 });
 </script>
 
