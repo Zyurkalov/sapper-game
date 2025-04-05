@@ -1,6 +1,11 @@
 <template>
     <div class="template">
         <div class="arcade">
+            <div class="arcade__wire arcade__wire_left"></div>
+            <div class="arcade__wire arcade__wire_right"></div>
+            <div class="arcade__switch arcade__switch_right"></div>
+            <div class="arcade__switch arcade__switch_left"></div>
+
             <div class="arcade__header">
                 <MinesCounter :mines="countBombs"></MinesCounter>
                 <button class="arcade__btn" @click="restartGame">
@@ -13,7 +18,7 @@
                 :field="field"
                 @mousedown="handleClick"
             />
-            <span v-else>Закладываем бомбы...</span>
+            <span v-else>launch the bomb...</span>
         </div>
     </div>
 </template>
@@ -192,6 +197,9 @@ onUnmounted(() => {
     border: var(--border);
     border-radius: var(--br-12);
     box-shadow: var(--shadow-outside);
+
+    position: relative;
+    z-index: 1;
 }
 .arcade__header {
     display: flex;
@@ -205,5 +213,50 @@ onUnmounted(() => {
 }
 .arcade__btn:hover {
     cursor: pointer;
+}
+.arcade__wire {
+    position: absolute;
+}
+.arcade__wire_left {
+    top: -53px;
+    left: -41px;
+    z-index: -1;
+
+    height: 170px;
+    width: 125px;
+    background-image: url(../assets/images/Group1.svg);
+    background-repeat: no-repeat;
+}
+.arcade__wire_right {
+    bottom: 20px;
+    right: -51px;
+    z-index: -1;
+
+    height: 182px;
+    width: 51px;
+    background-image: url(../assets/images/Group2.svg);
+    background-repeat: no-repeat;
+}
+.arcade__switch {
+    position: absolute;
+}
+.arcade__switch_right {
+    z-index: -1;
+    top: -23px;
+    right: 20px;
+
+    height: 21px;
+    width: 60px;
+    background-image: url(../assets/images/Group3.svg);
+    background-repeat: no-repeat;
+}
+.arcade__switch_left {
+    z-index: -1;
+    top: -10px;
+    right: 90px;
+
+    height: 10px;
+    width: 30px;
+    background-color: var(--color-grey);
 }
 </style>
