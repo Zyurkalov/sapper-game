@@ -1,22 +1,20 @@
-import type { TWinner } from "../types";
+import type { STORAGE_KEYS, TWinner } from "../types";
 import { getLocalStorage } from "./getLocalStorage";
 import { setLocalStorage } from "./setLocalStorage";
-import { v4 as uuidv4 } from "uuid";
 
 const addWinnerInHonorBoard = (
-    key: string,
+    key: STORAGE_KEYS,
     user: { nickname: string; score: number }
 ) => {
-    const winner: TWinner = {};
-    winner.id = uuidv4();
-    winner.place = 0;
-    winner.name = user.nickname;
-    winner.score = user.score;
+    const winner: Omit<TWinner, "id"> = {
+        name: user.nickname,
+        score: user.score,
+    };
 
-    const winners: TWinner[] = getLocalStorage(key) || [];
+    const winners: TWinner[] = getLocalStorage(key);
     const newArr: TWinner[] = [...winners, winner]
         .sort((a, b) => b.score - a.score)
-        .map((item, index) => ({ ...item, place: index + 1 }))
+        .map((item, index) => ({ ...item, id: index }))
         .slice(0, 10);
 
     setLocalStorage(newArr, key);

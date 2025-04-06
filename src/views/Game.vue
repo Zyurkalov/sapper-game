@@ -1,9 +1,7 @@
 <template>
     <div class="template">
         <div class="arcade">
-            <div class="arcade__wire"></div>
-            <div class="arcade__switch"></div>
-            <div class="arcade__wire_btn"></div>
+            <DecorForDisplay></DecorForDisplay>
 
             <div class="arcade__header">
                 <MinesCounter :mines="countBombs"></MinesCounter>
@@ -24,7 +22,7 @@
 
 <script setup lang="ts">
 import { startGame, type coordinates } from "@/service/game/startGame";
-import { onMounted, onUnmounted, ref, type Ref } from "vue";
+import { onMounted, onUnmounted, ref, type Ref, computed } from "vue";
 import Field from "@/components/Field.vue";
 import type Cell from "@/classes/cell";
 import openEmptyCells from "@/service/game/openEmptyCells";
@@ -37,8 +35,8 @@ import getAllGoodCell from "@/service/game/checkAllGoodCell";
 import getTime from "@/service/game/getTime";
 import gameWin from "@/service/game/gameWin";
 import openCell from "@/service/game/openCell";
-import { computed } from "vue";
 import clearSetInterval from "@/service/game/clearSetInterval";
+import DecorForDisplay from "@/components/DecorForDisplay.vue";
 
 const props = defineProps({
     rows: {
@@ -104,6 +102,10 @@ const handleClick = (e: MouseEvent) => {
                 if (!startTimer) {
                     startTimer = setInterval(() => {
                         timer.value = updateTime(timer.value, true);
+                        if (!timer.value) {
+                            gameOver(valueCell, bombs.value, field, isEndGame);
+                            startTimer = clearSetInterval(startTimer);
+                        }
                     }, 1000);
                 }
             }
@@ -212,63 +214,5 @@ onUnmounted(() => {
 }
 .arcade__btn:hover {
     cursor: pointer;
-}
-.arcade__wire,
-.arcade__switch {
-    position: relative;
-    top: -22px;
-    right: 0;
-}
-.arcade__wire::before {
-    content: "";
-    position: absolute;
-    top: -41px;
-    left: -50px;
-    z-index: -1;
-
-    height: 170px;
-    width: 125px;
-    background-image: url(../assets/images/Group1.svg);
-    background-repeat: no-repeat;
-    pointer-events: none;
-}
-.arcade__switch::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: -10px;
-    right: 12px;
-    height: 21px;
-    width: 60px;
-    background-image: url(../assets/images/Group3.svg);
-    background-repeat: no-repeat;
-}
-.arcade__switch::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 0px;
-    right: 90px;
-
-    height: 10px;
-    width: 30px;
-    background-color: var(--color-grey);
-}
-.arcade__wire_btn {
-    bottom: 0px;
-    left: 0px;
-}
-.arcade__wire_btn::after {
-    content: "";
-    position: absolute;
-    bottom: -118px;
-    left: 90px;
-    rotate: 90deg;
-    z-index: -1;
-
-    height: 182px;
-    width: 51px;
-    background-image: url(../assets/images/Group2.svg);
-    background-repeat: no-repeat;
 }
 </style>

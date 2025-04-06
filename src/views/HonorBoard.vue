@@ -20,7 +20,7 @@
                 >
                     <div class="honor__player">
                         <span class="honor__span honor__span_place">{{
-                            player.place
+                            player.id + 1
                         }}</span>
                         <p class="honor__namePlayer">{{ player.name }}</p>
                         <span class="honor__span honor__span_score">{{

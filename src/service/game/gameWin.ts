@@ -19,7 +19,7 @@ const gameWin = (
     popupStore.openWinnerPopup();
     userStore.setUserData({
         score: getScore(score, rows * columns, gameTime, bombs),
-        time: time,
+        time: gameTime,
     });
     isEndGame.value = true;
     console.log("WINNER!");
