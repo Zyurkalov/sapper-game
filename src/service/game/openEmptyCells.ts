@@ -1,32 +1,41 @@
 import type Cell from "@/classes/cell";
+import type { Ref } from "vue";
 
-export default function openEmptyCells(cells: Cell[][], firstCell: Cell): {cells: Cell[][], openedCells: number} {
+export default function openEmptyCells(
+    cells: Ref<Cell[][]>,
+    targetCell: Cell,
+    allGoodCells: Ref<number>,
+    countBombs: Ref<number>
+) {
     const queue: [number, number][] = [];
-    let openedCells = 1
+    let openedCells = 1;
 
-    firstCell.getNeighbours().forEach(data => {
+    targetCell.getNeighbours().forEach((data) => {
         queue.push([data.row, data.column]);
     });
 
     while (queue.length > 0) {
-        const [row, column] = queue.shift()
-        const cell = cells[row][column];
+        const [row, column] = queue.shift()!;
+        const cell = cells.value[row][column];
+        if (cell.getIsChecked()) continue;
+        if (cell.getFlag()) {
+            cell.flag = null;
+            countBombs.value++;
+        }
 
-        if(cell.getIsChecked()) continue
-
-        const value = cell.getValue()
+        const value = cell.getValue();
         cell.openCell();
-        openedCells++
+        openedCells++;
 
         if (value === null) {
             const neighbours = cell.getNeighbours();
-            neighbours.forEach(coords => {
-                const target = cells[coords.row][coords.column];
+            neighbours.forEach((coords) => {
+                const target = cells.value[coords.row][coords.column];
                 if (!target.getIsChecked()) {
                     queue.push([coords.row, coords.column]);
                 }
             });
         }
     }
-    return {cells, openedCells};
+    allGoodCells.value = allGoodCells.value - openedCells;
 }

@@ -31,7 +31,7 @@ watch(
 .container {
     box-sizing: border-box;
     height: 30px;
-    width: 100px;
+    min-width: 90px;
     padding: 5px 5px;
     border-radius: 4px;
 

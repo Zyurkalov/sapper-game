@@ -2,7 +2,7 @@
     <button
         :class="['btnSubmit ', addedClasses]"
         type="submit"
-        :disabled="disabled"
+        :disabled="props.disabled"
     >
         <slot></slot>
     </button>

@@ -12,7 +12,6 @@
             >
                 <span class="cellValue" :key="uuidv4()">
                     {{ cell.isChecked ? getCellValue(cell.value) : null }}
-                    <!-- {{ cell.getFlag() && !cell.isChecked ? cell.getFlag() : null}} -->
                     {{ paintFlag(cell, cell.isChecked) }}
                 </span>
             </li>

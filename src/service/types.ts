@@ -1,6 +1,6 @@
 export type TWinner = {
-    id: number | string;
-    place: number;
+    id: number;
+    // place: number;
     name: string;
     score: number;
 };

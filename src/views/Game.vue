@@ -1,6 +1,8 @@
 <template>
     <div class="template">
         <div class="arcade">
+            <DecorForDisplay></DecorForDisplay>
+
             <div class="arcade__header">
                 <MinesCounter :mines="countBombs"></MinesCounter>
                 <button class="arcade__btn" @click="restartGame">
@@ -13,14 +15,14 @@
                 :field="field"
                 @mousedown="handleClick"
             />
-            <span v-else>Закладываем бомбы...</span>
+            <span v-else>launch the bomb...</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { startGame, type coordinates } from "@/service/game/startGame";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, type Ref, computed } from "vue";
 import Field from "@/components/Field.vue";
 import type Cell from "@/classes/cell";
 import openEmptyCells from "@/service/game/openEmptyCells";
@@ -31,8 +33,10 @@ import MinesCounter from "@/components/MinesCounter.vue";
 import updateTime from "@/service/game/updateTime";
 import getAllGoodCell from "@/service/game/checkAllGoodCell";
 import getTime from "@/service/game/getTime";
-import { usePopupStore } from "@/stores/usePopup";
-import { useUserData } from "@/stores/useUserData";
+import gameWin from "@/service/game/gameWin";
+import openCell from "@/service/game/openCell";
+import clearSetInterval from "@/service/game/clearSetInterval";
+import DecorForDisplay from "@/components/DecorForDisplay.vue";
 
 const props = defineProps({
     rows: {
@@ -48,16 +52,20 @@ const props = defineProps({
         required: true,
     },
 });
-const popupStore = usePopupStore();
-const userStore = useUserData();
 
-const field = ref<Cell[][]>([]);
+const field: Ref<Cell[][]> = ref([]);
 const score = ref<number>(0);
 const bombs = ref<coordinates[]>([]);
-const countBombs = ref<number>(props.maxBombs);
 const allGoodCells = ref(0);
 const isEndGame = ref(false);
 const timer = ref<number>(0);
+const _countBombs = ref<number>(props.maxBombs);
+const countBombs = computed({
+    get: () => _countBombs.value,
+    set: (newValue) => {
+        _countBombs.value = Math.min(newValue, props.maxBombs);
+    },
+});
 const preventContextMenu = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -67,9 +75,14 @@ const handleClick = (e: MouseEvent) => {
     try {
         const target = (e.target as HTMLElement).closest(".cell");
         if (target && !isEndGame.value) {
-            const r = parseInt(target.dataset.rowIndex || "0", 10);
-            const c = parseInt(target.dataset.columnIndex || "0", 10);
-
+            const r = parseInt(
+                (target as HTMLElement).dataset.rowIndex || "0",
+                10
+            );
+            const c = parseInt(
+                (target as HTMLElement).dataset.columnIndex || "0",
+                10
+            );
             if (
                 allGoodCells.value === getAllGoodCell(props) &&
                 e.button === 0
@@ -78,7 +91,7 @@ const handleClick = (e: MouseEvent) => {
                     props.rows,
                     props.columns,
                     props.maxBombs,
-                    field.value,
+                    field,
                     { row: r, col: c }
                 );
                 field.value = initialField;
@@ -89,61 +102,45 @@ const handleClick = (e: MouseEvent) => {
                 if (!startTimer) {
                     startTimer = setInterval(() => {
                         timer.value = updateTime(timer.value, true);
+                        if (!timer.value) {
+                            gameOver(valueCell, bombs.value, field, isEndGame);
+                            startTimer = clearSetInterval(startTimer);
+                        }
                     }, 1000);
                 }
             }
-            // const newField = JSON.parse(JSON.stringify(props.field));
-            let newField: Cell[][] | any = field.value.map((row, rowIndex) => {
-                return rowIndex === r
-                    ? row.map((cell, columnIndex) => {
-                          return columnIndex === c ? cell.copy() : cell;
-                      })
-                    : row;
-            });
-            const targetCell = newField[r][c];
+
+            const targetCell: Cell = field.value[r][c];
             const valueCell = targetCell.getValue();
 
             if (e.button === 0 && !targetCell.getIsChecked()) {
-                targetCell.openCell();
+                openCell(targetCell, countBombs);
+
                 if (typeof valueCell === "number") {
                     score.value += valueCell;
                     --allGoodCells.value;
                 }
                 if (!valueCell) {
-                    const { cells, openedCells } = openEmptyCells(
-                        newField,
-                        targetCell
-                    );
-                    allGoodCells.value = allGoodCells.value - openedCells;
-                    newField = cells;
+                    openEmptyCells(field, targetCell, allGoodCells, countBombs);
                 }
                 if (valueCell === "bomb" || timer.value <= 0) {
-                    isEndGame.value = true;
-                    console.log("GAME OVER");
-                    newField = gameOver(valueCell, bombs.value, newField);
-                    if (startTimer) {
-                        clearInterval(startTimer);
-                        startTimer = null;
-                    }
+                    gameOver(valueCell, bombs.value, field, isEndGame);
+                    startTimer = clearSetInterval(startTimer);
                 }
-                field.value = newField;
 
                 if (allGoodCells.value === 0) {
-                    isEndGame.value = true;
-                    if (startTimer) {
-                        clearInterval(startTimer);
-                        startTimer = null;
-                    }
-                    popupStore.openWinnerPopup();
-                    userStore.setUserData({
-                        score: score.value,
-                        time: getTime(props.rows, props.columns) - timer.value,
-                    });
-                    console.log("WINNER!");
+                    gameWin(
+                        score.value,
+                        props.rows,
+                        props.columns,
+                        timer.value,
+                        bombs.value.length,
+                        isEndGame
+                    );
+                    startTimer = clearSetInterval(startTimer);
                 }
             } else {
                 targetCell.changeFlag();
-                field.value = newField;
 
                 if (!targetCell.getIsChecked()) {
                     const flag = targetCell.getFlag();
@@ -157,11 +154,10 @@ const handleClick = (e: MouseEvent) => {
             }
         }
     } catch (err) {
-        throw new Error("Ошибка в обработке клика");
+        throw new Error(`Ошибка в обработке клика: ${err}`);
     }
 };
 const restartGame = () => {
-    field.value = [];
     score.value = 0;
     bombs.value = [];
     countBombs.value = props.maxBombs;
@@ -169,6 +165,7 @@ const restartGame = () => {
     isEndGame.value = false;
     timer.value = getTime(props.rows, props.columns);
     field.value = createField(props.rows, props.columns);
+    startTimer = clearSetInterval(startTimer);
 };
 onMounted(() => {
     window.addEventListener("contextmenu", preventContextMenu);
@@ -177,17 +174,16 @@ onMounted(() => {
 });
 onUnmounted(() => {
     window.removeEventListener("contextmenu", preventContextMenu);
-    if (startTimer) {
-        clearInterval(startTimer);
-        startTimer = null;
-    }
+    window.removeEventListener("click", handleClick);
+    window.removeEventListener("click", restartGame);
+    startTimer = clearSetInterval(startTimer);
 });
 </script>
 
 <style scoped>
 .template {
-    width: 100vw;
-    height: 85vh;
+    max-width: 100vw;
+    height: 90vh;
 
     display: flex;
     flex-direction: column;
@@ -202,6 +198,9 @@ onUnmounted(() => {
     border: var(--border);
     border-radius: var(--br-12);
     box-shadow: var(--shadow-outside);
+
+    position: relative;
+    z-index: 1;
 }
 .arcade__header {
     display: flex;

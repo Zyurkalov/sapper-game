@@ -8,22 +8,26 @@
                     v-for="game in gameLvl"
                     :key="game.id"
                     class="mainPage__list"
-                    @click="setUserRank(game.title)"
                 >
                     <router-link
                         v-if="game.rows"
-                        :to="`game/${game.rows}/${game.columns}/${game.maxBombs}`"
+                        :to="`/game/${game.rows}/${game.columns}/${game.maxBombs}`"
                         class="mainPage__anchor"
+                        @click="setUserRank(game.title)"
                     >
                         {{ game.title }}
                     </router-link>
-                    <span v-else @click="popupStore.openNewGamePopup">{{
-                        game.title
-                    }}</span>
+                    <span
+                        v-else
+                        class="mainPage__anchor"
+                        @click="handleCustomGame"
+                    >
+                        {{ game.title }}
+                    </span>
                 </li>
             </ul>
         </nav>
-        <p class="mainPage__advice">choise your game</p>
+        <p class="mainPage__advice">Choose your game</p>
     </div>
 </template>
 
@@ -31,7 +35,7 @@
 import Logotype from "@/components/Logotype.vue";
 import { usePopupStore } from "@/stores/usePopup";
 import { useUserData } from "@/stores/useUserData";
-import { ref } from "vue";
+import { onUnmounted, ref } from "vue";
 
 const popupStore = usePopupStore();
 const userStore = useUserData();
@@ -42,9 +46,17 @@ const gameLvl = ref([
     { id: 3, title: "hard", rows: 16, columns: 32, maxBombs: 100 },
     { id: 4, title: "custom" },
 ]);
+
 const setUserRank = (rank: "easy" | "medium" | "hard" | "custom" | any) => {
-    if (rank) userStore.setUserData({ rank: rank });
+    userStore.setUserData({ rank });
 };
+const handleCustomGame = () => {
+    setUserRank("custom");
+    popupStore.openNewGamePopup();
+};
+onUnmounted(() => {
+    window.removeEventListener("click", handleCustomGame);
+});
 </script>
 
 <style scoped>
@@ -58,29 +70,9 @@ const setUserRank = (rank: "easy" | "medium" | "hard" | "custom" | any) => {
     align-items: center;
     justify-content: center;
 }
-.wrapper {
-    position: relative;
-    height: 200px;
-    padding-top: 60px;
-    background-image: url("/icons/Star-big.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    gap: -0px;
-}
 .mainPage__header {
     padding-top: 50px;
     visibility: hidden;
-}
-.wrapper__paragraph {
-    position: absolute;
-    top: 150px;
-    font-family: var(--font-paragraph);
-    font-size: 1rem;
-    font-weight: 400;
 }
 .mainPage__menu > ul {
     list-style: none;
@@ -94,7 +86,7 @@ const setUserRank = (rank: "easy" | "medium" | "hard" | "custom" | any) => {
 }
 .mainPage__list {
     font-size: 1.4rem;
-    color: black;
+    color: var(--cell-color-8);
     font-family: var(--font-paragraph);
     text-decoration: unset;
     cursor: pointer;

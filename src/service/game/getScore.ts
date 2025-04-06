@@ -1,7 +1,22 @@
-import { SCORE_MODIFICATOR } from "../constants";
+import {
+    TIME_MODIFICATOR,
+    BOMBS_MODIFICATOR,
+    NEIGHBOR_MODIFICATOR,
+} from "../constants";
 
-const getScore  = (score: number, startTime: number, finishTime: number):number => {
-    return Math.floor(score *SCORE_MODIFICATOR / ((startTime - finishTime) / 100 ))
-}
+const getScore = (
+    score: number,
+    cells: number,
+    time: number,
+    bombs: number
+): number => {
+    const timeFactor = TIME_MODIFICATOR / time;
+    const difficultFactor = BOMBS_MODIFICATOR * (bombs / cells);
+    const extraPoints = NEIGHBOR_MODIFICATOR * (bombs * 8 - score);
 
-export default getScore
+    return time
+        ? Math.floor(score * timeFactor * difficultFactor + extraPoints)
+        : 0;
+};
+
+export default getScore;
